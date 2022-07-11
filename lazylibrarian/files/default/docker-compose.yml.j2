@@ -1,0 +1,25 @@
+---
+version: "2.1"
+services:
+  lazylibrarian:
+    image: {{ lazylibrarian.lookup.containers.lazylibrarian.image }}
+    container_name: lazylibrarian
+    env_file:
+      - {{ lazylibrarian.lookup.paths.config_lazylibrarian }}
+    volumes:
+      - {{ lazylibrarian.lookup.paths.data or "lazylibrarian-data" }}:/config
+{%- for path in lazylibrarian.mount_paths %}
+      - {{ path }}:{{ path }}
+{%- endfor %}
+{%- for path in lazylibrarian.lookup.paths.misc %}
+      - {{ path }}:{{ path }}
+{%- endfor %}
+    ports:
+      - {{ lazylibrarian.container.host_port }}:{{ lazylibrarian.config.General.http_port }}
+    restart: unless-stopped
+
+{%- if not lazylibrarian.lookup.paths.data %}
+
+volumes:
+  lazylibrarian-data:
+{%- endif %}

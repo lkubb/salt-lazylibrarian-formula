@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set default values.
+---
+values:
+  lookup:
+    rootgroup: root
+    compose:
+      create_pod: null
+      pod_args: null
+      project_name: lazylibrarian
+      remove_orphans: true
+      service:
+        container_prefix: null
+        ephemeral: true
+        pod_prefix: null
+        restart_policy: on-failure
+        separator: null
+        stop_timeout: null
+    paths:
+      base: /opt/containers/lazylibrarian
+      compose: docker-compose.yml
+      config_lazylibrarian: lazylibrarian.env
+      data: data
+      misc: []
+    user:
+      groups: []
+      home: null
+      name: lazylibrarian
+      shell: /usr/sbin/nologin
+      uid: null
+    containers:
+      lazylibrarian:
+        image: ghcr.io/linuxserver/lazylibrarian
+  install:
+    rootless: true
+    remove_all_data_for_sure: false
+  config:
+    General:
+      destination_dir: /books
+      download_dir: /downloads
+      http_host: 0.0.0.0
+      http_port: 5299
+      user_accounts: 1
+  container:
+    calibredb_import: true
+    ffmpeg: true
+    host_port: 5299
+    pgid: null
+    puid: null
+    tz: null
+  mount_paths: []
+  # Just here for testing
+  added_in_defaults: defaults_value
+  winner: defaults
+...

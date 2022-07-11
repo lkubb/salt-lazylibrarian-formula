@@ -1,0 +1,31 @@
+{#- -*- coding: utf-8 -*- #}
+{#- vim: ft=jinja #}
+
+{#-
+    Convenience: Make relative paths absolute.
+-#}
+
+{%- set base_path = mapdata.lookup.paths.base %}
+{%- for path, val in mapdata.lookup.paths.items() %}
+  {%- if val is string and not val.startswith("/") %}
+    {%- do mapdata.lookup.paths.update({path: base_path | path_join(val)}) %}
+  {%- endif %}
+{%- endfor %}
+
+{%- if not mapdata.lookup.user.home %}
+  {%- do mapdata.lookup.user.update({"home": base_path}) %}
+{%- endif %}
+
+
+{#-
+    Make sure optional binaries are set up.
+-#}
+
+{%- for opt, category, config, setting in [
+  (mapdata.container.calibredb_import, "General", "imp_calibredb", "/usr/bin/calibredb"),
+  (mapdata.container.ffmpeg, "Preprocess", "ffmpeg", "ffmpeg"),
+] %}
+  {%- if opt %}
+    {%- do mapdata.config | update_dict_key_value(category, {config: setting}) %}
+  {%- endif %}
+{%- endfor %}
