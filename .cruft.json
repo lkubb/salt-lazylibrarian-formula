@@ -27,6 +27,10 @@
             "image": "ghcr.io/linuxserver/lazylibrarian"
           }
         },
+        "media_group": {
+          "gid": 3414,
+          "name": "mediarr"
+        },
         "paths": {
           "data": "data",
           "misc": []
@@ -48,6 +52,7 @@
           "host_port": 5299,
           "pgid": null,
           "puid": null,
+          "userns_keep_id": true,
           "tz": null
         },
         "mount_paths": []

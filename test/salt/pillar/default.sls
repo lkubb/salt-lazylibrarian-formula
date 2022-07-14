@@ -34,6 +34,9 @@ lazylibrarian:
     containers:
       lazylibrarian:
         image: ghcr.io/linuxserver/lazylibrarian
+    media_group:
+      gid: 3414
+      name: mediarr
   install:
     rootless: true
     remove_all_data_for_sure: false
@@ -51,6 +54,7 @@ lazylibrarian:
     pgid: null
     puid: null
     tz: null
+    userns_keep_id: true
   mount_paths: []
 
   tofs:

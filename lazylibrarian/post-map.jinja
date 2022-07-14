@@ -29,3 +29,13 @@
     {%- do mapdata.config | update_dict_key_value(category, {config: setting}) %}
   {%- endif %}
 {%- endfor %}
+
+
+{#-
+    Convenience: Make sure container pgid is the same as gid when
+    dedicated media group is in use.
+-#}
+
+{%- if mapdata.container.pgid is none and mapdata.lookup.media_group.gid is not none %}
+  {%- do mapdata.container.update({"pgid": mapdata.lookup.media_group.gid}) %}
+{%- endif %}
