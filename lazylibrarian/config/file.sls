@@ -20,7 +20,7 @@ LazyLibrarian environment files are managed:
                   }}
     - mode: '0640'
     - user: root
-    - group: {{ lazylibrarian.lookup.user.name }}
+    - group: __slot__:salt:user.primary_group({{ lazylibrarian.lookup.user.name }})
     - makedirs: True
     - template: jinja
     - require:
@@ -37,7 +37,7 @@ LazyLibrarian settings are managed:
     - merge_if_exists: true
     - dataset: {{ lazylibrarian.config | json }}
     - user: {{ lazylibrarian.lookup.user.name }}
-    - group: {{ lazylibrarian.lookup.user.name }}
+    - group: __slot__:salt:user.primary_group({{ lazylibrarian.lookup.user.name }})
     # Creating this file and managing ownership is fine, the entrypoint script
     # ensures the correct permissions.
     # - create: false

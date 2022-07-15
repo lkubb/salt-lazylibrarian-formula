@@ -8,7 +8,7 @@
 LazyLibrarian user account is present:
   user.present:
 {%- for param, val in lazylibrarian.lookup.user.items() %}
-{%-   if val is not none and param != "groups" %}
+{%-   if val is not none and param not in ["groups", "gid"] %}
     - {{ param }}: {{ val }}
 {%-   endif %}
 {%- endfor %}
@@ -17,17 +17,15 @@ LazyLibrarian user account is present:
     - groups: {{ lazylibrarian.lookup.user.groups | json }}
     # (on Debian 11) subuid/subgid are only added automatically for non-system users
     - system: false
-
-{%- if lazylibrarian.lookup.media_group.gid %}
-
-LazyLibrarian user is member of dedicated media group:
+{%- if not lazylibrarian.lookup.media_group.gid %}]
+    - gid: {{ lazylibrarian.lookup.user.gid or "null" }}
+{%- else %}
+    - gid: {{ lazylibrarian.lookup.media_group.gid }}
+    - require:
+      - group: {{ lazylibrarian.lookup.media_group.name }}
   group.present:
     - name: {{ lazylibrarian.lookup.media_group.name }}
     - gid: {{ lazylibrarian.lookup.media_group.gid }}
-    - addusers:
-      - {{ lazylibrarian.lookup.user.name }}
-    - require:
-      - user: {{ lazylibrarian.lookup.user.name }}
 {%- endif %}
 
 LazyLibrarian user session is initialized at boot:
@@ -40,7 +38,7 @@ LazyLibrarian paths are present:
     - names:
       - {{ lazylibrarian.lookup.paths.base }}
     - user: {{ lazylibrarian.lookup.user.name }}
-    - group: {{ lazylibrarian.lookup.user.name }}
+    - group: __slot__:salt:user.primary_group({{ lazylibrarian.lookup.user.name }})
     - makedirs: true
     - require:
       - user: {{ lazylibrarian.lookup.user.name }}
@@ -65,16 +63,19 @@ LazyLibrarian is installed:
   compose.installed:
     - name: {{ lazylibrarian.lookup.paths.compose }}
 {%- for param, val in lazylibrarian.lookup.compose.items() %}
-{%-   if val is not none and param != "service" %}
+{%-   if val is not none and param not in ["service"] %}
     - {{ param }}: {{ val }}
 {%-   endif %}
 {%- endfor %}
-{%- if lazylibrarian.install.rootless and lazylibrarian.container.userns_keep_id %}
+{%- if lazylibrarian.container.userns_keep_id and lazylibrarian.install.rootless %}
     - podman_create_args:
+{%-   if lazylibrarian.lookup.compose.create_pod is false %}
+{#-     post-map.jinja ensures this is in pod_args if pods are in use #}
         # this maps the host uid/gid to the same ones inside the container
         # important for network share access
         # https://github.com/containers/podman/issues/5239#issuecomment-587175806
       - userns: keep-id
+{%-   endif %}
         # linuxserver images generally assume to be started as root,
         # then drop privileges as defined in PUID/PGID.
       - user: 0
