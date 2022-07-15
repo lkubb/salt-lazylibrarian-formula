@@ -31,6 +31,7 @@ lazylibrarian:
       name: lazylibrarian
       shell: /usr/sbin/nologin
       uid: null
+      gid: null
     containers:
       lazylibrarian:
         image: ghcr.io/linuxserver/lazylibrarian
