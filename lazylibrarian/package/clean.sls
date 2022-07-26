@@ -43,6 +43,9 @@ LazyLibrarian user account is absent:
     - purge: {{ lazylibrarian.install.remove_all_data_for_sure }}
     - require:
       - LazyLibrarian is absent
+    - retry:
+        attempts: 5
+        interval: 2
 
 {%- if lazylibrarian.install.remove_all_data_for_sure %}
 

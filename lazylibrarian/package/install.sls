@@ -32,6 +32,8 @@ LazyLibrarian user session is initialized at boot:
   compose.lingering_managed:
     - name: {{ lazylibrarian.lookup.user.name }}
     - enable: {{ lazylibrarian.install.rootless }}
+    - require:
+      - user: {{ lazylibrarian.lookup.user.name }}
 
 LazyLibrarian paths are present:
   file.directory:
