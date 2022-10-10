@@ -6,6 +6,10 @@ services:
     container_name: lazylibrarian
     env_file:
       - {{ lazylibrarian.lookup.paths.config_lazylibrarian }}
+{%- if lazylibrarian.install.autoupdate %}
+    labels:
+      - io.containers.autoupdate=registry
+{%- endif %}
     volumes:
       - {{ lazylibrarian.lookup.paths.data or "lazylibrarian-data" }}:/config
 {%- for path in lazylibrarian.mount_paths %}

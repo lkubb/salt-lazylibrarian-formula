@@ -8,6 +8,18 @@
 include:
   - {{ sls_config_clean }}
 
+{%- if lazylibrarian.install.autoupdate_service %}
+
+Podman autoupdate service is disabled for LazyLibrarian:
+{%-   if lazylibrarian.install.rootless %}
+  compose.systemd_service_disabled:
+    - user: {{ lazylibrarian.lookup.user.name }}
+{%-   else %}
+  service.disabled:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}
+
 LazyLibrarian is absent:
   compose.removed:
     - name: {{ lazylibrarian.lookup.paths.compose }}

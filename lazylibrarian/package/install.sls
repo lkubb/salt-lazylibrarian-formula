@@ -94,3 +94,15 @@ LazyLibrarian is installed:
     - require:
       - user: {{ lazylibrarian.lookup.user.name }}
 {%- endif %}
+
+{%- if lazylibrarian.install.autoupdate_service is not none %}
+
+Podman autoupdate service is managed for LazyLibrarian:
+{%-   if lazylibrarian.install.rootless %}
+  compose.systemd_service_{{ "enabled" if lazylibrarian.install.autoupdate_service else "disabled" }}:
+    - user: {{ lazylibrarian.lookup.user.name }}
+{%-   else %}
+  service.{{ "enabled" if lazylibrarian.install.autoupdate_service else "disabled" }}:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}
