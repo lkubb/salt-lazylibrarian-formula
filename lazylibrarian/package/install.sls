@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as lazylibrarian with context %}
 {%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
@@ -45,11 +44,28 @@ LazyLibrarian paths are present:
     - require:
       - user: {{ lazylibrarian.lookup.user.name }}
 
+{%- if lazylibrarian.install.podman_api %}
+
+LazyLibrarian podman API is enabled:
+  compose.systemd_service_enabled:
+    - name: podman
+    - user: {{ lazylibrarian.lookup.user.name }}
+    - require:
+      - LazyLibrarian user session is initialized at boot
+
+LazyLibrarian podman API is available:
+  compose.systemd_service_running:
+    - name: podman
+    - user: {{ lazylibrarian.lookup.user.name }}
+    - require:
+      - LazyLibrarian user session is initialized at boot
+{%- endif %}
+
 LazyLibrarian compose file is managed:
   file.managed:
     - name: {{ lazylibrarian.lookup.paths.compose }}
-    - source: {{ files_switch(['docker-compose.yml', 'docker-compose.yml.j2'],
-                              lookup='LazyLibrarian compose file is present'
+    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
+                              lookup="LazyLibrarian compose file is present"
                  )
               }}
     - mode: '0644'

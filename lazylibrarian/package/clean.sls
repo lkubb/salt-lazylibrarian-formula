@@ -1,8 +1,14 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_clean = tplroot ~ '.config.clean' %}
+{#-
+    Removes the lazylibrarian containers
+    and the corresponding user account and service units.
+    Has a depency on `lazylibrarian.config.clean`_.
+    If ``remove_all_data_for_sure`` was set, also removes all data.
+#}
+
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_config_clean = tplroot ~ ".config.clean" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as lazylibrarian with context %}
 
 include:
@@ -40,6 +46,25 @@ LazyLibrarian compose file is absent:
     - name: {{ lazylibrarian.lookup.paths.compose }}
     - require:
       - LazyLibrarian is absent
+
+{%- if lazylibrarian.install.podman_api %}
+
+LazyLibrarian podman API is unavailable:
+  compose.systemd_service_dead:
+    - name: podman
+    - user: {{ lazylibrarian.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ lazylibrarian.lookup.user.name }}
+
+LazyLibrarian podman API is disabled:
+  compose.systemd_service_disabled:
+    - name: podman
+    - user: {{ lazylibrarian.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ lazylibrarian.lookup.user.name }}
+{%- endif %}
 
 LazyLibrarian user session is not initialized at boot:
   compose.lingering_managed:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: ft=yaml
 ---
 lazylibrarian:
@@ -47,6 +46,7 @@ lazylibrarian:
     autoupdate: true
     autoupdate_service: false
     remove_all_data_for_sure: false
+    podman_api: true
   config:
     General:
       destination_dir: /books
