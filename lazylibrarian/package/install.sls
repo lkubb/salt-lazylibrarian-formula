@@ -48,14 +48,14 @@ LazyLibrarian paths are present:
 
 LazyLibrarian podman API is enabled:
   compose.systemd_service_enabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ lazylibrarian.lookup.user.name }}
     - require:
       - LazyLibrarian user session is initialized at boot
 
 LazyLibrarian podman API is available:
   compose.systemd_service_running:
-    - name: podman
+    - name: podman.socket
     - user: {{ lazylibrarian.lookup.user.name }}
     - require:
       - LazyLibrarian user session is initialized at boot

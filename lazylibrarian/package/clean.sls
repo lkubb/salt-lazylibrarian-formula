@@ -51,7 +51,7 @@ LazyLibrarian compose file is absent:
 
 LazyLibrarian podman API is unavailable:
   compose.systemd_service_dead:
-    - name: podman
+    - name: podman.socket
     - user: {{ lazylibrarian.lookup.user.name }}
     - onlyif:
       - fun: user.info
@@ -59,7 +59,7 @@ LazyLibrarian podman API is unavailable:
 
 LazyLibrarian podman API is disabled:
   compose.systemd_service_disabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ lazylibrarian.lookup.user.name }}
     - onlyif:
       - fun: user.info
