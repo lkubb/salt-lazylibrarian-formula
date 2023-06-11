@@ -62,6 +62,11 @@ values:
     tz: null
     userns_keep_id: true
   mount_paths: []
+  tofs:
+    files_switch:
+      - id
+      - roles
+      - os_family
   # Just here for testing
   added_in_defaults: defaults_value
   winner: defaults

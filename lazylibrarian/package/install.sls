@@ -2,7 +2,7 @@
 
 {%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as lazylibrarian with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 LazyLibrarian user account is present:
   user.present:
@@ -64,14 +64,16 @@ LazyLibrarian podman API is available:
 LazyLibrarian compose file is managed:
   file.managed:
     - name: {{ lazylibrarian.lookup.paths.compose }}
-    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
-                              lookup="LazyLibrarian compose file is present"
+    - source: {{ files_switch(
+                    ["docker-compose.yml", "docker-compose.yml.j2"],
+                    config=lazylibrarian,
+                    lookup="LazyLibrarian compose file is present",
                  )
               }}
     - mode: '0644'
     - user: root
     - group: {{ lazylibrarian.lookup.rootgroup }}
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - makedirs: true
     - context:
