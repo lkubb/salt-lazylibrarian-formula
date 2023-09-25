@@ -34,3 +34,4 @@ LazyLibrarian service is running:
 {%- endif %}
     - watch:
       - LazyLibrarian is installed
+      - sls: {{ sls_config_file }}

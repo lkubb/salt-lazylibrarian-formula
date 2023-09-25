@@ -26,7 +26,7 @@ LazyLibrarian environment files are managed:
     - template: jinja
     - require:
       - user: {{ lazylibrarian.lookup.user.name }}
-    - watch_in:
+    - require_in:
       - LazyLibrarian is installed
     - context:
         lazylibrarian: {{ lazylibrarian | json }}
@@ -39,8 +39,6 @@ LazyLibrarian settings are managed:
     - dataset: {{ lazylibrarian.config | json }}
     - user: {{ lazylibrarian.lookup.user.name }}
     - group: __slot__:salt:user.primary_group({{ lazylibrarian.lookup.user.name }})
-    - watch_in:
-      - LazyLibrarian is installed
     # Creating this file and managing ownership is fine, the entrypoint script
     # ensures the correct permissions.
     # - create: false
