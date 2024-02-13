@@ -1,3 +1,18 @@
+{%- set is_netfs = {} %}
+{%- for path in [lazylibrarian.lookup.paths.data] + lazylibrarian.mount_paths + lazylibrarian.lookup.paths.misc %}
+{%-   if not path %}
+{%-     continue %}
+{%-   endif %}
+{%-   do is_netfs.update({
+        path: salt["cmd.run_stdout"](
+          "df -P '{data}' | ".format(data=path) ~
+          "awk 'BEGIN {e=1} $NF ~ /^\/.+/ { e=0 ; print $1 ; exit } END { exit e }'",
+          python_shell=true,
+        )
+      })
+-%}
+{%- endfor -%}
+
 ---
 version: "2.1"
 services:
@@ -11,12 +26,12 @@ services:
       - io.containers.autoupdate=registry
 {%- endif %}
     volumes:
-      - {{ lazylibrarian.lookup.paths.data or "lazylibrarian-data" }}:/config
+      - {{ lazylibrarian.lookup.paths.data or "lazylibrarian-data" }}:/config{%- if not is_netfs.get(lazylibrarian.lookup.paths.data) %}:z{%- endif %}
 {%- for path in lazylibrarian.mount_paths %}
-      - {{ path }}:{{ path }}
+      - {{ path }}:{{ path }}{%- if not is_netfs.get(path) %}:z{%- endif %}
 {%- endfor %}
 {%- for path in lazylibrarian.lookup.paths.misc %}
-      - {{ path }}:{{ path }}
+      - {{ path }}:{{ path }}{%- if not is_netfs.get(path) %}:z{%- endif %}
 {%- endfor %}
     ports:
       - {{ lazylibrarian.container.host_port }}:{{ lazylibrarian.config.General.http_port }}
