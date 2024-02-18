@@ -26,6 +26,21 @@ LazyLibrarian user account is present:
     - name: {{ lazylibrarian.lookup.media_group.name }}
     - gid: {{ lazylibrarian.lookup.media_group.gid }}
 {%- endif %}
+  file.append:
+    - names:
+      - {{ lazylibrarian.lookup.user.home | path_join(".bashrc") }}:
+        - text:
+          - export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          - export DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus
+
+      - {{ lazylibrarian.lookup.user.home | path_join(".bash_profile") }}:
+        - text: |
+            if [ -f ~/.bashrc ]; then
+              . ~/.bashrc
+            fi
+
+    - require:
+      - user: {{ lazylibrarian.lookup.user.name }}
 
 LazyLibrarian user session is initialized at boot:
   compose.lingering_managed:
